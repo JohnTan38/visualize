@@ -85,7 +85,7 @@ Navigate to [http://localhost:3000](http://localhost:3000)
 - **Frontend Framework**: Next.js 14.2 (App Router)
 - **UI Library**: React 18.3
 - **Styling**: Tailwind CSS 3.4
-- **API**: Anthropic Claude Sonnet 4
+- **API**: Anthropic Claude-Sonnet-4-5
 - **CSV Parsing**: PapaParse
 - **Icons**: Lucide React
 - **Language**: TypeScript

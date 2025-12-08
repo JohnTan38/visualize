@@ -1,8 +1,18 @@
 'use client'
 
-import { BarChart3, Sparkles } from 'lucide-react'
+import { BarChart3, Sparkles, Sun, Moon } from 'lucide-react'
 
-export function Header() {
+type HeaderProps = {
+  theme: 'light' | 'dark'
+  onToggleTheme: () => void
+}
+
+export function Header({ theme, onToggleTheme }: HeaderProps) {
+  const toggleClasses =
+    theme === 'dark'
+      ? 'border-slate-700/40 bg-slate-800/50 hover:bg-slate-800 text-slate-100'
+      : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-700 shadow-sm'
+
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-4">
@@ -31,6 +41,20 @@ export function Header() {
             </span>
           </div>
         </div>
+
+        <button
+          type="button"
+          onClick={onToggleTheme}
+          className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors text-sm font-medium ${toggleClasses}`}
+          aria-label="Toggle light and dark mode"
+        >
+          {theme === 'dark' ? (
+            <Sun className="w-4 h-4 text-amber-300" />
+          ) : (
+            <Moon className="w-4 h-4 text-slate-700" />
+          )}
+          <span className="hidden sm:inline">{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+        </button>
       </div>
     </div>
   )

@@ -31,7 +31,7 @@ An AI-powered data visualization application that transforms CSV files into stun
 1. **Clone the repository**
 ```bash
 git clone <repository-url>
-cd csv-visualizer-app
+cd visualize
 ```
 
 2. **Install dependencies**

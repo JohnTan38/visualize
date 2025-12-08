@@ -8,6 +8,8 @@ import { Header } from '@/components/Header'
 import { Sparkles, BarChart3 } from 'lucide-react'
 import { loadPersistedApiKey, persistApiKey } from '@/lib/apiKeyStorage'
 
+const THEME_STORAGE_KEY = 'visualize-theme'
+
 export default function Home() {
   const [apiKey, setApiKey] = useState<string>('')
   const [csvFile, setCsvFile] = useState<File | null>(null)
@@ -15,6 +17,7 @@ export default function Home() {
   const [visualizations, setVisualizations] = useState<any[]>([])
   const [isProcessing, setIsProcessing] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark')
 
   useEffect(() => {
     const savedApiKey = loadPersistedApiKey()
@@ -22,6 +25,28 @@ export default function Home() {
       setApiKey(savedApiKey)
     }
   }, [])
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem(THEME_STORAGE_KEY)
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+      setTheme(savedTheme)
+      return
+    }
+
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+    setTheme(prefersDark ? 'dark' : 'light')
+  }, [])
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    document.body.classList.toggle('theme-light', theme === 'light')
+    document.body.classList.toggle('theme-dark', theme === 'dark')
+    localStorage.setItem(THEME_STORAGE_KEY, theme)
+  }, [theme])
+
+  const toggleTheme = () => {
+    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'))
+  }
 
   const handleSaveApiKey = (key: string) => {
     const normalizedKey = key.trim()
@@ -78,12 +103,26 @@ export default function Home() {
     }
   }
 
+  const isDark = theme === 'dark'
+  const pageBackground = isDark
+    ? 'bg-gradient-to-br from-[#0a0e27] via-[#151b3d] to-[#0a0e27]'
+    : 'bg-gradient-to-br from-slate-50 via-white to-slate-100'
+
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-[#0a0e27] via-[#151b3d] to-[#0a0e27]">
+    <div className={`flex min-h-screen transition-colors duration-300 ${pageBackground}`}>
       {/* Background Effects */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse-slow" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '2s' }} />
+        <div
+          className={`absolute top-0 left-1/4 w-96 h-96 rounded-full blur-3xl animate-pulse-slow ${
+            isDark ? 'bg-blue-500/10' : 'bg-blue-300/20'
+          }`}
+        />
+        <div
+          className={`absolute bottom-0 right-1/4 w-96 h-96 rounded-full blur-3xl animate-pulse-slow ${
+            isDark ? 'bg-purple-500/10' : 'bg-purple-300/20'
+          }`}
+          style={{ animationDelay: '2s' }}
+        />
       </div>
 
       {/* Sidebar */}
@@ -98,7 +137,7 @@ export default function Home() {
       <main className="flex-1 ml-80 relative">
         <div className="max-w-7xl mx-auto p-8 space-y-8">
           {/* Header */}
-          <Header />
+          <Header theme={theme} onToggleTheme={toggleTheme} />
 
           {/* Hero Section */}
           {!csvFile && (
@@ -113,14 +152,14 @@ export default function Home() {
                 <h1 className="text-5xl font-bold mb-4">
                   <span className="gradient-text">Transform Your Data</span>
                   <br />
-                  <span className="text-slate-200">Into Business Insights</span>
+                  <span className={isDark ? 'text-slate-200' : 'text-slate-800'}>Into Business Insights</span>
                 </h1>
                 
-                <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-8">
+                <p className={`text-xl max-w-2xl mx-auto mb-8 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                   Upload your CSV files and create stunning, customized visualizations with natural language prompts
                 </p>
 
-                <div className="flex items-center justify-center gap-6 text-sm text-slate-500">
+                <div className={`flex items-center justify-center gap-6 text-sm ${isDark ? 'text-slate-500' : 'text-slate-600'}`}>
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                     <span>Real-time Processing</span>

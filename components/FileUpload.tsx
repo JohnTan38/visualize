@@ -5,6 +5,11 @@ import { Upload, FileText, CheckCircle, AlertCircle } from 'lucide-react'
 import Papa from 'papaparse'
 import { validateCsvFile } from '@/lib/fileValidation'
 
+type CsvParseResult = {
+  data: any[]
+  errors: Array<{ message: string }>
+}
+
 interface FileUploadProps {
   onFileUpload: (file: File, data: any[]) => void
 }
@@ -34,7 +39,7 @@ export function FileUpload({ onFileUpload }: FileUploadProps) {
       header: true,
       skipEmptyLines: true,
       dynamicTyping: true,
-      complete: (results) => {
+      complete: (results: CsvParseResult) => {
         if (results.errors.length > 0) {
           setUploadStatus('error')
           setErrorMessage('Error parsing CSV file')
@@ -51,7 +56,7 @@ export function FileUpload({ onFileUpload }: FileUploadProps) {
         setUploadStatus('success')
         onFileUpload(file, results.data)
       },
-      error: (error) => {
+      error: (error: Error) => {
         setUploadStatus('error')
         setErrorMessage(`Error: ${error.message}`)
         console.error('CSV Parse Error:', error)

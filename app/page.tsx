@@ -1,4 +1,5 @@
 'use client'
+//app/page.tsx
 
 import { useEffect, useState } from 'react'
 import { FileUpload } from '@/components/FileUpload'
